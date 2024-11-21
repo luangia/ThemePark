@@ -15,7 +15,10 @@
 #include <Fl/Fl_Gl_Window.h>
 #include "Ground.h"
 #include "Track.h"
+#include "SceneObject.h"
 #include "Wall.h"
+#include <vector>
+#include <memory>
 
 
 // Subclass the Fl_Gl_Window because we want to draw OpenGL in here.
@@ -28,6 +31,13 @@ class WorldWindow : public Fl_Gl_Window {
 	// otherwise needs to be redrawn.
 	void	draw(void);
 
+	// Render all objects in the scene
+	void drawObjects() const;
+
+	// Add a new object to the scene
+	template <typename T>
+	void addSceneObject(const std::vector<float>& params);
+
 	// Event handling method. Uses only mouse events.
 	int	handle(int);
 
@@ -38,7 +48,7 @@ class WorldWindow : public Fl_Gl_Window {
     private:
 	Ground	    ground;	    // The ground object.
 	Track  traintrack;	    // The train and track.
-	Wall wall;
+	std::vector<std::unique_ptr<SceneObject>> sceneObjects;
 
 	static const double FOV_X; // The horizontal field of view.
 

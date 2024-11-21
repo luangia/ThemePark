@@ -101,7 +101,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Stuff.cpp" />
+    <ClCompile Include="SceneObject.h" />
+    <ClCompile Include="Wall.cpp" />
     <ClCompile Include="CubicBspline.cpp" />
     <ClCompile Include="GenericException.cpp" />
     <ClCompile Include="Ground.cpp" />
@@ -115,7 +116,7 @@
     <ClInclude Include="GenericException.h" />
     <ClInclude Include="Ground.h" />
     <ClInclude Include="libtarga.h" />
-    <ClInclude Include="Stuff.h" />
+    <ClInclude Include="Wall.h" />
     <ClInclude Include="Track.h" />
     <ClInclude Include="WorldWindow.h" />
   </ItemGroup>

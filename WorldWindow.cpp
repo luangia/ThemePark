@@ -87,7 +87,7 @@ WorldWindow::draw(void)
 	// TO DO: Add all other stuffs here
 	ground.Initialize();
 	traintrack.Initialize();
-	stuff.Initialize();
+	addSceneObject<Wall>({ 10.0f, -20.0f, 10.0f, 10.0f, 3.0f, 10.0f });
     }
 
     // Stuff out here relies on a coordinate system or must be done on every
@@ -115,7 +115,8 @@ WorldWindow::draw(void)
     // Draw stuff. Everything.
     ground.Draw();
     traintrack.Draw();
-	stuff.Draw();
+	drawObjects();
+	
 }
 
 
@@ -214,4 +215,15 @@ WorldWindow::handle(int event)
     return Fl_Gl_Window::handle(event);
 }
 
+void WorldWindow::drawObjects() const {
+	for (const auto& obj : sceneObjects) {
+		obj->Draw(); // Call the draw method of each SceneObject
+	}
+}
 
+template <typename T>
+void WorldWindow::addSceneObject(const std::vector<float>& params) {
+	auto object = std::make_unique<T>();
+	object->Initialize(params); // Call the object's Initialize method
+	sceneObjects.push_back(std::move(object));
+}

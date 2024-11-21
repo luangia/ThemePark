@@ -28,10 +28,10 @@ public:
     ~Wall(void);
 
     // Initializer. Creates the display list.
-    bool    Initialize(float x, float y, float z, float width, float height, float depth);
+    bool    Initialize(const std::vector<float>& params) override;
 
     // Does the drawing.
-    void    Draw(void);
+    void    Draw(void) const override;
 };
 
 
