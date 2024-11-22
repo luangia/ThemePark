@@ -101,6 +101,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Cloud.cpp" />
+    <ClCompile Include="Cloud.h" />
     <ClCompile Include="SceneObject.h" />
     <ClCompile Include="Wall.cpp" />
     <ClCompile Include="CubicBspline.cpp" />

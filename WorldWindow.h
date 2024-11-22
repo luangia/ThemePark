@@ -19,6 +19,7 @@
 #include "Wall.h"
 #include <vector>
 #include <memory>
+#include "Cloud.h"
 
 
 // Subclass the Fl_Gl_Window because we want to draw OpenGL in here.
