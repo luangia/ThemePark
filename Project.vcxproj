@@ -102,7 +102,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Cloud.cpp" />
-    <ClCompile Include="Cloud.h" />
     <ClCompile Include="SceneObject.h" />
     <ClCompile Include="Wall.cpp" />
     <ClCompile Include="CubicBspline.cpp" />
@@ -114,6 +113,7 @@
     <ClCompile Include="WorldWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Cloud.h" />
     <ClInclude Include="CubicBspline.h" />
     <ClInclude Include="GenericException.h" />
     <ClInclude Include="Ground.h" />

@@ -20,8 +20,7 @@ private:
     std::vector<Triangle> triangles;
     int subdivisionLevel;
 
-    GLubyte display_list;   // The display list that does all the work.
-    GLuint  texture_obj;    // The object for the grass texture.
+    GLubyte display_list;   // The display list that does all the work. 
     bool    initialized;    // Whether or not we have been initialised.
 
     float x, y, z;
@@ -37,10 +36,11 @@ private:
     std::uniform_real_distribution<float> dist;
 
 public:
-    Cloud(void) { };
+    Cloud(void) {};
     bool Initialize(const std::vector<float>& params) override;	// Gets everything set up for drawing.
     void refine();
     void Draw() const override;
 };
 
 #endif // CLOUD_H
+#pragma once

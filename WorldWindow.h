@@ -17,9 +17,11 @@
 #include "Track.h"
 #include "SceneObject.h"
 #include "Wall.h"
+#include "Cloud.h"
 #include <vector>
 #include <memory>
-#include "Cloud.h"
+
+
 
 
 // Subclass the Fl_Gl_Window because we want to draw OpenGL in here.

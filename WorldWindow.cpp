@@ -90,7 +90,6 @@ WorldWindow::draw(void)
 	addSceneObject<Wall>({ 10.0f, -20.0f, 10.0f, 10.0f, 3.0f, 10.0f });
 	addSceneObject<Cloud>({ 0.0f, 10.0f, 25.0f, 20, 3.0f, 1.0f }); // 20 shapes, radii between 1 and 5
 	addSceneObject<Cloud>({ 10.0f, -10.0f, 25.0f, 10, 5.0f, 1.0f }); // 20 shapes, radii between 1 and 5
-
     }
 
     // Stuff out here relies on a coordinate system or must be done on every
