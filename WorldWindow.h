@@ -41,6 +41,7 @@ class WorldWindow : public Fl_Gl_Window {
 	template <typename T>
 	void addSceneObject(const std::vector<float>& params);
 
+
 	// Event handling method. Uses only mouse events.
 	int	handle(int);
 

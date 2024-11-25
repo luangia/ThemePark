@@ -1,150 +1,241 @@
 #include "Cloud.h"
-#include <GL/glu.h>
 #include <cmath>
+#include <GL/glu.h>
+#include <iostream>
 #include <map>
+#include <vector>
 
 // Constructor
 bool Cloud::Initialize(const std::vector<float>& params) {
-    subdivisionLevel = 0;
+	subdivisionLevel = 0;
+	needs_update = false;
 
-    x = params[0];
-    y = params[1];
-    z = params[2];
-    int shapeCount = params[3];
-    float maxRadius = params[4];
-    float minRadius = params[5];
+	// Cloud position in space
+	x = params[0];
+	y = params[1];
+	z = params[2];
 
-    vertices.clear();
-    triangles.clear();
+	// Number of shapes and their size range
+	int shapeCount = params[3];
+	float maxRadius = params[4];
+	float minRadius = params[5];
 
-    for (int i = 0; i < shapeCount; ++i) {
-        // Random position and size for each shape
-        Vertex center = { dist(rng) * maxRadius + x,
-                          dist(rng) * maxRadius + y,
-                          dist(rng) * maxRadius + z };
-        float radius = minRadius + (dist(rng) + 1.0f) / 2.0f * (maxRadius - minRadius);
+	// Clear existing data
+	vertices.clear();
+	triangles.clear();
+	centers.clear();
 
-        // Generate a shape at the random position
-        generateShape(center, radius, subdivisionLevel);
-    }
+	for (int i = 0; i < shapeCount; ++i) {
+		// Random position and size for each shape center
+		float centerX = dist(rng) * maxRadius + x;
+		float centerY = dist(rng) * maxRadius + y;
+		float centerZ = dist(rng) * maxRadius + z;
 
-    // Now do the geometry. Create the display list.
-    display_list = glGenLists(1);
-    glNewList(display_list, GL_COMPILE);
+		// Add center to the centers vector
+		centers.emplace_back(centerX, centerY, centerZ, 0.0f, -1);
+		int centerIndex = centers.size() - 1;
 
-    glColor3f(1.0, 1.0, 1.0);
+		std::cout << "CENTER: (" << centerX << ", " << centerY << ", " << centerZ << ")\n";
 
-    glBegin(GL_TRIANGLES);
-    for (const auto& tri : triangles) {
-        const auto& v1 = vertices[tri.v1];
-        const auto& v2 = vertices[tri.v2];
-        const auto& v3 = vertices[tri.v3];
+		float radius = minRadius + (dist(rng) + 1.0f) / 2.0f * (maxRadius - minRadius);
 
-        glNormal3f(v1.x, v1.y, v1.z);
-        glVertex3f(v1.x, v1.y, v1.z);
+		// Generate a shape at the random position
+		generateShape(centerIndex, radius, subdivisionLevel);
+	}
 
-        glNormal3f(v2.x, v2.y, v2.z);
-        glVertex3f(v2.x, v2.y, v2.z);
+	// Generate the display list for rendering
+	display_list = glGenLists(1);
+	glNewList(display_list, GL_COMPILE);
 
-        glNormal3f(v3.x, v3.y, v3.z);
-        glVertex3f(v3.x, v3.y, v3.z);
-    }
+	glColor3f(1.0, 1.0, 1.0);
 
-    glEnd();
+	glBegin(GL_TRIANGLES);
+	for (const auto& tri : triangles) {
+		const auto& v1 = vertices[tri.v1];
+		const auto& v2 = vertices[tri.v2];
+		const auto& v3 = vertices[tri.v3];
 
-    glEndList();
+		// Calculate normals for smooth shading
+		glNormal3f(v1.x, v1.y, v1.z);
+		glVertex3f(v1.x, v1.y, v1.z);
 
-    initialized = true;
+		glNormal3f(v2.x, v2.y, v2.z);
+		glVertex3f(v2.x, v2.y, v2.z);
 
-    return true;
+		glNormal3f(v3.x, v3.y, v3.z);
+		glVertex3f(v3.x, v3.y, v3.z);
+	}
+	glEnd();
+
+	glEndList();
+
+	initialized = true;
+	return true;
 }
+
 
 // Normalize a vertex to form a unit vector
-Vertex Cloud::normalize(const Vertex& v) {
-    float length = std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
-    return { v.x / length, v.y / length, v.z / length };
+Vertex Cloud::normalize(const Vertex& v) const {
+	float length = std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+	return { v.x / length, v.y / length, v.z / length, v.radius, v.centerIndex };
 }
 
-// Find the midpoint between two vertices
-Vertex Cloud::midPoint(const Vertex& v1, const Vertex& v2) {
-    return normalize({ (v1.x + v2.x) / 2.0f, (v1.y + v2.y) / 2.0f, (v1.z + v2.z) / 2.0f });
-}
 
 // Perform a single level of subdivision
 void Cloud::subdivide() {
-    std::vector<Triangle> newTriangles;
-    std::vector<Vertex> newVertices = vertices;
-    std::map<std::pair<int, int>, int> midPointCache;
+	/*std::cout << "AAA========List of Vertices:\n";
+	for (size_t i = 0; i < vertices.size(); ++i) {
+		const auto& v = vertices[i];
+		std::cout << "Vertex " << i << ": ("
+			<< "x=" << v.x << ", "
+			<< "y=" << v.y << ", "
+			<< "z=" << v.z << ", "
+			<< "radius=" << v.radius << ", "
+			<< "center=(";
+		if (v.center) {
+			std::cout << v.center->x << ", " << v.center->y << ", " << v.center->z;
+		} else {
+			std::cout << "null";
+		}
+		std::cout << "))\n";
+	}*/
 
-    auto getMidPointIndex = [&](int v1, int v2) -> int {
-        int minVal = (((v1) < (v2)) ? (v1) : (v2));
-        int maxVal = (((v1) > (v2)) ? (v1) : (v2));
-        auto key = std::make_pair(minVal, maxVal);
-        if (midPointCache.find(key) == midPointCache.end()) {
-            Vertex mid = midPoint(vertices[key.first], vertices[key.second]);
-            midPointCache[key] = newVertices.size();
-            newVertices.push_back(mid);
-        }
-        return midPointCache[key];
-        };
+	std::vector<Triangle> newTriangles;
+	std::vector<Vertex> newVertices = vertices;
+	std::map<std::pair<int, int>, int> midPointCache;
 
-    for (const auto& tri : triangles) {
-        int a = getMidPointIndex(tri.v1, tri.v2);
-        int b = getMidPointIndex(tri.v2, tri.v3);
-        int c = getMidPointIndex(tri.v3, tri.v1);
+	auto getMidPointIndex = [&](int v1, int v2) -> int {
+		int minVal = min(v1, v2);
+		int maxVal = max(v1, v2);
+		auto key = std::make_pair(minVal, maxVal);
 
-        newTriangles.push_back({ tri.v1, a, c });
-        newTriangles.push_back({ tri.v2, b, a });
-        newTriangles.push_back({ tri.v3, c, b });
-        newTriangles.push_back({ a, b, c });
-    }
+		if (midPointCache.find(key) == midPointCache.end()) {
+			// Compute midpoint
+			Vertex mid = (vertices[v1] + vertices[v2]) * 0.5f;
+			mid.radius = vertices[v1].radius;
+			mid.centerIndex = vertices[v1].centerIndex;
 
-    vertices = std::move(newVertices);
-    triangles = std::move(newTriangles);
+			const Vertex& center = centers[mid.centerIndex];
+			Vertex toCenter = normalize({ mid.x - center.x, mid.y - center.y, mid.z - center.z, mid.radius, mid.centerIndex });
+
+			mid.x = toCenter.x * mid.radius + center.x;
+			mid.y = toCenter.y * mid.radius + center.y;
+			mid.z = toCenter.z * mid.radius + center.z;
+
+			midPointCache[key] = newVertices.size();
+			newVertices.push_back(mid);
+		}
+		return midPointCache[key];
+		};
+	for (const auto& tri : triangles) {
+		int a = getMidPointIndex(tri.v1, tri.v2);
+		int b = getMidPointIndex(tri.v2, tri.v3);
+		int c = getMidPointIndex(tri.v3, tri.v1);
+
+		newTriangles.push_back({ tri.v1, a, c });
+		newTriangles.push_back({ tri.v2, b, a });
+		newTriangles.push_back({ tri.v3, c, b });
+		newTriangles.push_back({ a, b, c });
+	}
+	vertices = std::move(newVertices);
+	triangles = std::move(newTriangles);
+
 }
+
 
 // Refine the model by one subdivision
 void Cloud::refine() {
-    ++subdivisionLevel;
-    subdivide();
+	++subdivisionLevel;
+	subdivide();
+	needs_update = true;
+}
+
+void Cloud::RegenerateDisplayList() {
+	if (display_list != 0) {
+		glDeleteLists(display_list, 1); // Delete the old display list
+	}
+
+	// Generate a new display list
+	display_list = glGenLists(1);
+	glNewList(display_list, GL_COMPILE);
+
+	glColor3f(1.0, 1.0, 1.0);
+
+	glBegin(GL_TRIANGLES);
+
+	for (const auto& tri : triangles) {
+		const auto& v1 = vertices[tri.v1];
+		const auto& v2 = vertices[tri.v2];
+		const auto& v3 = vertices[tri.v3];
+
+
+		glNormal3f(v1.x, v1.y, v1.z);
+		glVertex3f(v1.x, v1.y, v1.z);
+
+		glNormal3f(v2.x, v2.y, v2.z);
+		glVertex3f(v2.x, v2.y, v2.z);
+
+		glNormal3f(v3.x, v3.y, v3.z);
+		glVertex3f(v3.x, v3.y, v3.z);
+	}
+	glEnd();
+
+	glEndList();
+
+	// Mark as up-to-date
+	needs_update = false;
 }
 
 // Draw the cloud
 void Cloud::Draw() const {
-    glPushMatrix();
-    glCallList(display_list);
-    glPopMatrix();
+	glPushMatrix();
+	glCallList(display_list);
+	glPopMatrix();
+
 }
 
-// Generate a single sphere/ellipsoid and add it to the cloud
-void Cloud::generateShape(const Vertex& center, float radius, int subdivisions) {
-    // Start with an icosahedron for the base shape
-    std::vector<Vertex> shapeVertices = {
-        { -1,  1.618f, 0 }, { 1,  1.618f, 0 }, { -1, -1.618f, 0 }, { 1, -1.618f, 0 },
-        { 0, -1,  1.618f }, { 0,  1,  1.618f }, { 0, -1, -1.618f }, { 0,  1, -1.618f },
-        { 1.618f, 0, -1 }, { 1.618f, 0,  1 }, { -1.618f, 0, -1 }, { -1.618f, 0,  1 },
-    };
-
-    std::vector<Triangle> shapeTriangles = {
-        { 0, 11, 5 }, { 0, 5, 1 }, { 0, 1, 7 }, { 0, 7, 10 }, { 0, 10, 11 },
-        { 1, 5, 9 }, { 5, 11, 4 }, { 11, 10, 2 }, { 10, 7, 6 }, { 7, 1, 8 },
-        { 3, 9, 4 }, { 3, 4, 2 }, { 3, 2, 6 }, { 3, 6, 8 }, { 3, 8, 9 },
-        { 4, 9, 5 }, { 2, 4, 11 }, { 6, 2, 10 }, { 8, 6, 7 }, { 9, 8, 1 }
-    };
-
-    // Normalize vertices and scale to radius
-    for (auto& vertex : shapeVertices) {
-        vertex = normalize(vertex);
-        vertex.x = vertex.x * radius + center.x;
-        vertex.y = vertex.y * radius + center.y;
-        vertex.z = vertex.z * radius + center.z;
-    }
-
-    // Add vertices and triangles to the cloud
-    int vertexOffset = vertices.size();
-    vertices.insert(vertices.end(), shapeVertices.begin(), shapeVertices.end());
-
-    for (const auto& tri : shapeTriangles) {
-        triangles.push_back({ tri.v1 + vertexOffset, tri.v2 + vertexOffset, tri.v3 + vertexOffset });
-    }
+void Cloud::Update() {
+	if (needs_update) {
+		std::cout << "increase subdivision:" << std::endl;
+		RegenerateDisplayList();
+	}
+	//Draw();
 }
+
+void Cloud::generateShape(int centerIndex, float radius, int subdivisions) {
+	const Vertex& center = centers[centerIndex];
+
+	// Start with an icosahedron for the base shape
+	std::vector<Vertex> shapeVertices = {
+		{ -1,  1.618f, 0, radius, centerIndex }, { 1,  1.618f, 0, radius, centerIndex },
+		{ -1, -1.618f, 0, radius, centerIndex }, { 1, -1.618f, 0, radius, centerIndex },
+		{ 0, -1,  1.618f, radius, centerIndex }, { 0,  1,  1.618f, radius, centerIndex },
+		{ 0, -1, -1.618f, radius, centerIndex }, { 0,  1, -1.618f, radius, centerIndex },
+		{ 1.618f, 0, -1, radius, centerIndex }, { 1.618f, 0,  1, radius, centerIndex },
+		{ -1.618f, 0, -1, radius, centerIndex }, { -1.618f, 0,  1, radius, centerIndex },
+	};
+
+	std::vector<Triangle> shapeTriangles = {
+		{ 0, 11, 5 }, { 0, 5, 1 }, { 0, 1, 7 }, { 0, 7, 10 }, { 0, 10, 11 },
+		{ 1, 5, 9 }, { 5, 11, 4 }, { 11, 10, 2 }, { 10, 7, 6 }, { 7, 1, 8 },
+		{ 3, 9, 4 }, { 3, 4, 2 }, { 3, 2, 6 }, { 3, 6, 8 }, { 3, 8, 9 },
+		{ 4, 9, 5 }, { 2, 4, 11 }, { 6, 2, 10 }, { 8, 6, 7 }, { 9, 8, 1 }
+	};
+
+	// Normalize vertices and scale to radius
+	for (auto& vertex : shapeVertices) {
+		vertex = normalize(vertex); // Normalize to the unit sphere
+		vertex.x = vertex.x * radius + center.x;
+		vertex.y = vertex.y * radius + center.y;
+		vertex.z = vertex.z * radius + center.z;
+	}
+
+	// Add vertices and triangles to the cloud
+	int vertexOffset = vertices.size();
+	vertices.insert(vertices.end(), shapeVertices.begin(), shapeVertices.end());
+
+	for (const auto& tri : shapeTriangles) {
+		triangles.push_back({ tri.v1 + vertexOffset, tri.v2 + vertexOffset, tri.v3 + vertexOffset });
+	}
+}
+
