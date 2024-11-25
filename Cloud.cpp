@@ -27,15 +27,13 @@ bool Cloud::Initialize(const std::vector<float>& params) {
 
 	for (int i = 0; i < shapeCount; ++i) {
 		// Random position and size for each shape center
-		float centerX = dist(rng) * maxRadius + x;
-		float centerY = dist(rng) * maxRadius + y;
-		float centerZ = dist(rng) * maxRadius + z;
+		float centerX = dist(rng) * maxRadius * 1.7f + x;
+		float centerY = dist(rng) * maxRadius * 1.7f + y;
+		float centerZ = dist(rng) * maxRadius * 0.8f + z;
 
 		// Add center to the centers vector
 		centers.emplace_back(centerX, centerY, centerZ, 0.0f, -1);
 		int centerIndex = centers.size() - 1;
-
-		std::cout << "CENTER: (" << centerX << ", " << centerY << ", " << centerZ << ")\n";
 
 		float radius = minRadius + (dist(rng) + 1.0f) / 2.0f * (maxRadius - minRadius);
 
@@ -83,23 +81,6 @@ Vertex Cloud::normalize(const Vertex& v) const {
 
 // Perform a single level of subdivision
 void Cloud::subdivide() {
-	/*std::cout << "AAA========List of Vertices:\n";
-	for (size_t i = 0; i < vertices.size(); ++i) {
-		const auto& v = vertices[i];
-		std::cout << "Vertex " << i << ": ("
-			<< "x=" << v.x << ", "
-			<< "y=" << v.y << ", "
-			<< "z=" << v.z << ", "
-			<< "radius=" << v.radius << ", "
-			<< "center=(";
-		if (v.center) {
-			std::cout << v.center->x << ", " << v.center->y << ", " << v.center->z;
-		} else {
-			std::cout << "null";
-		}
-		std::cout << "))\n";
-	}*/
-
 	std::vector<Triangle> newTriangles;
 	std::vector<Vertex> newVertices = vertices;
 	std::map<std::pair<int, int>, int> midPointCache;
