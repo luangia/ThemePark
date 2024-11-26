@@ -8,11 +8,11 @@
 #include <string.h>
 
 
-// Constructor stores the message.
-GenericException::GenericException(const char *m)
+ // Constructor stores the message.
+GenericException::GenericException(const char* m)
 {
-    message = new char[strlen(m) + 4];
-    strcpy(message, m);
+	message = new char[strlen(m) + 4];
+	strcpy(message, m);
 }
 
 
@@ -20,14 +20,14 @@ GenericException::GenericException(const char *m)
 GenericException&
 GenericException::operator=(const GenericException& e)
 {
-    if ( this != &e )
-    {
-	delete message;
-	message = new char[strlen(e.message)+4];
-	strcpy(message, e.message);
-    }
+	if (this != &e)
+	{
+		delete message;
+		message = new char[strlen(e.message) + 4];
+		strcpy(message, e.message);
+	}
 
-    return *this;
+	return *this;
 }
 
 

@@ -24,11 +24,11 @@
 
 
 
-// Subclass the Fl_Gl_Window because we want to draw OpenGL in here.
+ // Subclass the Fl_Gl_Window because we want to draw OpenGL in here.
 class WorldWindow : public Fl_Gl_Window {
-    public:
+public:
 	// Constructor takes window position and dimensions, the title.
-	WorldWindow(int x, int y, int w, int h, char *label);
+	WorldWindow(int x, int y, int w, int h, char* label);
 
 	// draw() method invoked whenever the view changes or the window
 	// otherwise needs to be redrawn.
@@ -49,7 +49,7 @@ class WorldWindow : public Fl_Gl_Window {
 	// the last time this method was called.
 	bool	Update(float);
 
-    private:
+private:
 	Ground	    ground;	    // The ground object.
 	Track  traintrack;	    // The train and track.
 	std::vector<std::unique_ptr<SceneObject>> sceneObjects;
@@ -68,9 +68,9 @@ class WorldWindow : public Fl_Gl_Window {
 	int	x_down; // The location of the mouse when the button was pushed
 	int	y_down;
 	float   phi_down;   // The view inclination angle when the mouse
-			    // button was pushed
+	// button was pushed
 	float   theta_down; // The view azimuthal angle when the mouse
-			    // button was pushed
+	// button was pushed
 	float	dist_down;  // The distance when the mouse button is pushed.
 	float	x_at_down;  // The x-coord to look at when the mouse went down.
 	float	y_at_down;  // The y-coord to look at when the mouse went down.

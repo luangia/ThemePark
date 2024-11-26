@@ -9,18 +9,18 @@
 #define _GENERICEXCEPTION_H_
 
 class GenericException {
-  private:
-    char    *message;	// Just contains a message
+private:
+	char* message;	// Just contains a message
 
-  public:
-    GenericException(const char *m = "");
-    ~GenericException() { delete message; };
+public:
+	GenericException(const char* m = "");
+	~GenericException() { delete message; };
 
-    // Copy operator
-    GenericException&	operator=(const GenericException&);
+	// Copy operator
+	GenericException& operator=(const GenericException&);
 
-    // Return the error message string associated with the exception.
-    const char* Message(void) { return message; };
+	// Return the error message string associated with the exception.
+	const char* Message(void) { return message; };
 };
 
 
