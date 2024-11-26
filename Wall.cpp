@@ -4,11 +4,10 @@
  *
  */
 
-
 #include "Wall.h"
 #include "libtarga.h"
-#include <stdio.h>
 #include <GL/glu.h>
+#include <stdio.h>
 
  // Destructor
 Wall::~Wall(void)
@@ -38,7 +37,7 @@ Wall::Initialize(const std::vector<float>& params)
 
 	// Load the image for the texture. The texture file has to be in
 	// a place where it will be found.
-	if (!(image_data = (ubyte*)tga_load("brick.tga", &image_width,
+	if (!(image_data = (ubyte*)tga_load("mossybrick.tga", &image_width,
 		&image_height, TGA_TRUECOLOR_24)))
 	{
 		fprintf(stderr, "Wall::Initialize: Couldn't load grass.tga\n");
@@ -81,50 +80,65 @@ Wall::Initialize(const std::vector<float>& params)
 	glBindTexture(GL_TEXTURE_2D, texture_obj);
 
 	glBegin(GL_QUADS);
+	float scaleFactor = 0.1f;
+
 	// Front face
-	glNormal3f(0.0f, 0.0f, 1.0f); // Normal pointing outward along the Z-axis
-	glTexCoord2f(1000.0, 1000.0); glVertex3f(x, y, z);
-	glTexCoord2f(-1000.0, 1000.0); glVertex3f(x + width, y, z);
-	glTexCoord2f(-1000.0, -1000.0); glVertex3f(x + width, y + height, z);
-	glTexCoord2f(1000.0, -1000.0); glVertex3f(x, y + height, z);
+	float frontWidth = width * scaleFactor;
+	float frontHeight = height * scaleFactor;
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(0.0, 0.0); glVertex3f(x, y, z);
+	glTexCoord2f(frontWidth, 0.0); glVertex3f(x + width, y, z);
+	glTexCoord2f(frontWidth, frontHeight); glVertex3f(x + width, y + height, z);
+	glTexCoord2f(0.0, frontHeight); glVertex3f(x, y + height, z);
 
 	// Back face
+	float backWidth = width * scaleFactor;
+	float backHeight = height * scaleFactor;
 	glNormal3f(0.0f, 0.0f, -1.0f);
-	glTexCoord2f(1000.0, 1000.0); glVertex3f(x, y + height, z - depth);
-	glTexCoord2f(-1000.0, 1000.0); glVertex3f(x + width, y + height, z - depth);
-	glTexCoord2f(-1000.0, -1000.0); glVertex3f(x + width, y, z - depth);
-	glTexCoord2f(1000.0, -1000.0); glVertex3f(x, y, z - depth);
+	glTexCoord2f(0.0, 0.0); glVertex3f(x, y + height, z - depth);
+	glTexCoord2f(backWidth, 0.0); glVertex3f(x + width, y + height, z - depth);
+	glTexCoord2f(backWidth, backHeight); glVertex3f(x + width, y, z - depth);
+	glTexCoord2f(0.0, backHeight); glVertex3f(x, y, z - depth);
 
 	// Left face
-	glNormal3f(-1.0f, 0.0f, 0.0f); // Normal pointing inward along the X-axis
-	glTexCoord2f(1000.0, 1000.0); glVertex3f(x, y + height, z);
-	glTexCoord2f(-1000.0, 1000.0); glVertex3f(x, y + height, z - depth);
-	glTexCoord2f(-1000.0, -1000.0); glVertex3f(x, y, z - depth);
-	glTexCoord2f(1000.0, -1000.0); glVertex3f(x, y, z);
+	float leftDepth = depth * scaleFactor;
+	float leftHeight = height * scaleFactor;
+	glNormal3f(-1.0f, 0.0f, 0.0f);
+	glTexCoord2f(0.0, 0.0); glVertex3f(x, y + height, z);
+	glTexCoord2f(0.0, leftDepth); glVertex3f(x, y + height, z - depth);
+	glTexCoord2f(leftHeight, leftDepth); glVertex3f(x, y, z - depth);
+	glTexCoord2f(leftHeight, 0.0); glVertex3f(x, y, z);
 
 	// Right face
-	glNormal3f(1.0f, 0.0f, 0.0f); // Normal pointing outward along the X-axis
-	glTexCoord2f(1000.0, 1000.0); glVertex3f(x + width, y, z);
-	glTexCoord2f(-1000.0, 1000.0); glVertex3f(x + width, y, z - depth);
-	glTexCoord2f(-1000.0, -1000.0); glVertex3f(x + width, y + height, z - depth);
-	glTexCoord2f(1000.0, -1000.0); glVertex3f(x + width, y + height, z);
+	float rightDepth = depth * scaleFactor;
+	float rightHeight = height * scaleFactor;
+	glNormal3f(1.0f, 0.0f, 0.0f);
+	glTexCoord2f(0.0, 0.0); glVertex3f(x + width, y, z);
+	glTexCoord2f(0.0, rightDepth); glVertex3f(x + width, y, z - depth);
+	glTexCoord2f(rightHeight, rightDepth); glVertex3f(x + width, y + height, z - depth);
+	glTexCoord2f(rightHeight, 0.0); glVertex3f(x + width, y + height, z);
 
 	// Top face
-	glNormal3f(0.0f, 1.0f, 0.0f); // Normal pointing outward along the Y-axis
-	glTexCoord2f(1000.0, 1000.0); glVertex3f(x, y + height, z);
-	glTexCoord2f(-1000.0, 1000.0); glVertex3f(x + width, y + height, z);
-	glTexCoord2f(-1000.0, -1000.0); glVertex3f(x + width, y + height, z - depth);
-	glTexCoord2f(1000.0, -1000.0); glVertex3f(x, y + height, z - depth);
+	float topWidth = width * scaleFactor;
+	float topDepth = depth * scaleFactor;
+	glNormal3f(0.0f, 1.0f, 0.0f);
+	glTexCoord2f(0.0, 0.0); glVertex3f(x, y + height, z);
+	glTexCoord2f(topWidth, 0.0); glVertex3f(x + width, y + height, z);
+	glTexCoord2f(topWidth, topDepth); glVertex3f(x + width, y + height, z - depth);
+	glTexCoord2f(0.0, topDepth); glVertex3f(x, y + height, z - depth);
 
 	// Bottom face
+	float bottomWidth = width * scaleFactor;
+	float bottomDepth = depth * scaleFactor;
 	glNormal3f(0.0f, -1.0f, 0.0f);
-	glTexCoord2f(1000.0, 1000.0); glVertex3f(x, y, z - depth);
-	glTexCoord2f(-1000.0, 1000.0); glVertex3f(x + width, y, z - depth);
-	glTexCoord2f(-1000.0, -1000.0); glVertex3f(x + width, y, z);
-	glTexCoord2f(1000.0, -1000.0); glVertex3f(x, y, z);
+	glTexCoord2f(0.0, 0.0); glVertex3f(x, y, z - depth);
+	glTexCoord2f(bottomWidth, 0.0); glVertex3f(x + width, y, z - depth);
+	glTexCoord2f(bottomWidth, bottomDepth); glVertex3f(x + width, y, z);
+	glTexCoord2f(0.0, bottomDepth); glVertex3f(x, y, z);
+
 
 	glEnd();
-
+	glDisable(GL_TEXTURE_2D);
 	glEndList();
 
 	// We only do all this stuff once, when the GL context is first set up.

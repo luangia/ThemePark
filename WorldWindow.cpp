@@ -89,7 +89,11 @@ WorldWindow::draw(void)
 		// TO DO: Add all other stuffs here
 		ground.Initialize();
 		traintrack.Initialize();
-		addSceneObject<Wall>({ 10.0f, -20.0f, 10.0f, 10.0f, 3.0f, 10.0f });
+		addSceneObject<Wall>({ -50.0f, -50.0f, 10.0f, 100.0f, 3.0f, 10.0f });
+		addSceneObject<Wall>({ -50.0f, -47.0f, 10.0f, 3.0f, 97.0f, 10.0f });
+		addSceneObject<Wall>({ 47.0f, -47.0f, 10.0f, 3.0f, 97.0f, 10.0f });
+
+
 		addSceneObject<Cloud>({ 0.0f, 10.0f, 25.0f, 5, 5.0f, 1.0f }); // 20 shapes, radii between 1 and 5
 		addSceneObject<Cloud>({ 10.0f, -10.0f, 25.0f, 10, 3.0f, 2.0f }); // 20 shapes, radii between 1 and 5
 
