@@ -18,6 +18,7 @@
 #include "SceneObject.h"
 #include "Wall.h"
 #include "Cloud.h"
+#include "Ferris.h"
 #include <vector>
 #include <memory>
 
@@ -53,6 +54,7 @@ private:
 	Ground	    ground;	    // The ground object.
 	Track  traintrack;	    // The train and track.
 	std::vector<std::unique_ptr<SceneObject>> sceneObjects;
+	Ferris ferris;
 
 	static const double FOV_X; // The horizontal field of view.
 

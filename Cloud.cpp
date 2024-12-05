@@ -27,8 +27,8 @@ bool Cloud::Initialize(const std::vector<float>& params) {
 
 	for (int i = 0; i < shapeCount; ++i) {
 		// Random position and size for each shape center
-		float centerX = dist(rng) * maxRadius * 1.7f + x;
-		float centerY = dist(rng) * maxRadius * 1.7f + y;
+		float centerX = dist(rng) * maxRadius * 2.0f + x;
+		float centerY = dist(rng) * maxRadius * 2.0f + y;
 		float centerZ = dist(rng) * maxRadius * 0.8f + z;
 
 		// Add center to the centers vector
@@ -45,7 +45,7 @@ bool Cloud::Initialize(const std::vector<float>& params) {
 	display_list = glGenLists(1);
 	glNewList(display_list, GL_COMPILE);
 
-	glColor3f(1.0, 1.0, 1.0);
+	glColor3f(1.0f, 0.8f, 0.85f);
 
 	glBegin(GL_TRIANGLES);
 	for (const auto& tri : triangles) {
@@ -139,9 +139,7 @@ void Cloud::RegenerateDisplayList() {
 	// Generate a new display list
 	display_list = glGenLists(1);
 	glNewList(display_list, GL_COMPILE);
-
-	glColor3f(1.0, 1.0, 1.0);
-
+	glColor3f(1.0f, 0.8f, 0.85f);
 	glBegin(GL_TRIANGLES);
 
 	for (const auto& tri : triangles) {

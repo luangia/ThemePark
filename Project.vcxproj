@@ -55,7 +55,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>D:\code\fltk_2022_1.3.8;C:\Users\luanp\OneDrive\Desktop\CS547\fltk_2022_1.3.8;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\code\fltk_2022_1.3.8;C:\Users\luanp\OneDrive\Desktop\CS547\fltk_2022_1.3.8;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;FL_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -102,6 +102,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Cloud.cpp" />
+    <ClCompile Include="Ferris.cpp" />
     <ClCompile Include="SceneObject.h" />
     <ClCompile Include="Wall.cpp" />
     <ClCompile Include="CubicBspline.cpp" />
@@ -115,6 +116,7 @@
   <ItemGroup>
     <ClInclude Include="Cloud.h" />
     <ClInclude Include="CubicBspline.h" />
+    <ClInclude Include="Ferris.h" />
     <ClInclude Include="GenericException.h" />
     <ClInclude Include="Ground.h" />
     <ClInclude Include="libtarga.h" />

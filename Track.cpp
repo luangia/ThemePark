@@ -86,7 +86,7 @@ Track::Initialize(void)
 	// train is assumed to be at the bottom of the train.
 	train_list = glGenLists(1);
 	glNewList(train_list, GL_COMPILE);
-	glColor3f(1.0, 0.0, 0.0);
+	glColor3f(1.0f, 0.8f, 0.85f);
 	glBegin(GL_QUADS);
 	glNormal3f(0.0f, 0.0f, 1.0f);
 	glVertex3f(0.5f, 0.5f, 1.0f);

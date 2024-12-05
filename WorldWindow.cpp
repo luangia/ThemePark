@@ -89,13 +89,15 @@ WorldWindow::draw(void)
 		// TO DO: Add all other stuffs here
 		ground.Initialize();
 		traintrack.Initialize();
+		ferris.Initialize();
 		addSceneObject<Wall>({ -50.0f, -50.0f, 10.0f, 100.0f, 3.0f, 10.0f });
 		addSceneObject<Wall>({ -50.0f, -47.0f, 10.0f, 3.0f, 97.0f, 10.0f });
 		addSceneObject<Wall>({ 47.0f, -47.0f, 10.0f, 3.0f, 97.0f, 10.0f });
 
 
-		addSceneObject<Cloud>({ 0.0f, 10.0f, 25.0f, 5, 5.0f, 1.0f }); // 20 shapes, radii between 1 and 5
-		addSceneObject<Cloud>({ 10.0f, -10.0f, 25.0f, 10, 3.0f, 2.0f }); // 20 shapes, radii between 1 and 5
+		addSceneObject<Cloud>({ 0.0f, 10.0f, 30.0f, 15, 5.0f, 1.0f }); // 20 shapes, radii between 1 and 5
+		addSceneObject<Cloud>({ 10.0f, -10.0f, 27.0f, 20, 3.0f, 2.0f }); // 20 shapes, radii between 1 and 5
+		addSceneObject<Cloud>({ -20.0f, -5.0f, 25.0f, 15, 4.0f, 3.0f }); // 20 shapes, radii between 1 and 5
 
 	}
 
@@ -125,10 +127,8 @@ WorldWindow::draw(void)
 	ground.Draw();
 	traintrack.Draw();
 	drawObjects();
+	ferris.Draw();
 
-	//glutKeyboardFunc([this](unsigned char key, int x, int y) {
-	//	this->keyboard(key, x, y); // Call the non-static member function
-	//	});
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
