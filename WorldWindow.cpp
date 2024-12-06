@@ -90,9 +90,30 @@ WorldWindow::draw(void)
 		ground.Initialize();
 		traintrack.Initialize();
 		ferris.Initialize();
-		addSceneObject<Wall>({ -50.0f, -50.0f, 10.0f, 100.0f, 3.0f, 10.0f });
-		addSceneObject<Wall>({ -50.0f, -47.0f, 10.0f, 3.0f, 97.0f, 10.0f });
-		addSceneObject<Wall>({ 47.0f, -47.0f, 10.0f, 3.0f, 97.0f, 10.0f });
+		//bottom left corner
+		addSceneObject<Wall>({ -50.0f, -50.0f, 10.0f, 30.0f, 3.0f, 10.0f });
+		addSceneObject<Wall>({ -50.0f, -47.0f, 10.0f, 3.0f, 27.0f, 10.0f });
+		//bottom right corner
+		addSceneObject<Wall>({ 47.0f, -47.0f, 10.0f, 3.0f, 27.0f, 10.0f });
+		addSceneObject<Wall>({ 20.0f, -50.0f, 10.0f, 30.0f, 3.0f, 10.0f });
+		//top left corner
+		addSceneObject<Wall>({ -50.0f, 20.0f, 10.0f, 3.0f, 30.0f, 10.0f });
+		addSceneObject<Wall>({ -47.0f, 47.0f, 10.0f, 27.0f, 3.0f, 10.0f });
+		//top right corner
+		addSceneObject<Wall>({ 20.0f, 47.0f, 10.0f, 30.0f, 3.0f, 10.0f });
+		addSceneObject<Wall>({ 47.0f, 20.0f, 10.0f, 3.0f, 27.0f, 10.0f });
+
+		// left inner wall
+		addSceneObject<Wall>({ -40.0f, -30.0f, 10.0f, 3.0f, 60.0f, 10.0f });
+
+		// right inner wall 
+		addSceneObject<Wall>({ 37.0f, -30.0f, 10.0f, 3.0f, 60.0f, 10.0f });
+
+		// top inner wall
+		addSceneObject<Wall>({ -30.0f, 40.0f, 10.0f, 60.0f, 3.0f, 10.0f });
+
+		// bottom inner wall
+		addSceneObject<Wall>({ -30.0f, -40.0f, 10.0f, 60.0f, 3.0f, 10.0f });
 
 
 		addSceneObject<Cloud>({ 0.0f, 10.0f, 30.0f, 15, 5.0f, 1.0f }); // 20 shapes, radii between 1 and 5
@@ -181,24 +202,6 @@ WorldWindow::Drag(float dt)
 	}
 }
 
-//void WorldWindow::keyboard(unsigned char key, int x, int y) {
-//	switch (key) {
-//	case 'r': // Refine all clouds in the scene
-//	case 'R':
-//		for (auto& obj : sceneObjects) {
-//			// Refine only objects of type Cloud
-//			if (Cloud* cloud = dynamic_cast<Cloud*>(obj.get())) {
-//				cloud->refine();
-//			}
-//		}
-//		break;
-//
-//	default:
-//		break;
-//	}
-//
-//	glutPostRedisplay(); // Trigger a redraw
-//}
 
 bool
 WorldWindow::Update(float dt)
